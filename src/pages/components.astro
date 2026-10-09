@@ -1,6 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Chip from '../components/Chip.astro';
+import ChipEditor from '../components/ChipEditor.astro';
+import { ChipEditor as ReactChipEditor } from '../components/react/Chip';
+import { ChipEditor as SolidChipEditor } from '../components/solid/Chip';
 
 const examples = [
   { label: 'Default' },
@@ -16,7 +19,7 @@ const examples = [
   <h2>Chip</h2>
   <p>
     A small badge. Each prop is set by whoever uses the component, so every instance can look
-    different.
+    different. The same component exists in Astro, React and Solid.
   </p>
 
   <table>
@@ -37,6 +40,18 @@ const examples = [
 
   <h3>Usage</h3>
   <pre><code>{`<Chip label="Messages" count={3} color="rebeccapurple" />`}</code></pre>
+
+  <h3>Live editors</h3>
+  <p>Edit the inputs and the chip updates as you type.</p>
+
+  <h4>Astro <small>(vanilla script)</small></h4>
+  <ChipEditor />
+
+  <h4>React</h4>
+  <ReactChipEditor client:load label="Messages" count={3} color="#663399" />
+
+  <h4>Solid</h4>
+  <SolidChipEditor client:load label="Messages" count={3} color="#663399" />
 </Layout>
 
 <style>
@@ -59,5 +74,32 @@ const examples = [
     padding: 0.75rem 1rem;
     border-radius: 6px;
     background: color-mix(in srgb, currentColor 8%, transparent);
+  }
+  h4 small {
+    font-weight: 400;
+    opacity: 0.6;
+  }
+</style>
+
+<!-- Global because the React and Solid editors render outside this page's scoped styles. -->
+<style is:global>
+  .editor {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+    border-radius: 6px;
+  }
+  .editor .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+  }
+  .editor input[type='text'],
+  .editor input[type='number'] {
+    width: 7rem;
   }
 </style>
