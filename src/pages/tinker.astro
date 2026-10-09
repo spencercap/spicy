@@ -1,0 +1,163 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const definitionCode = `// chip.props.ts: written once, shared by every framework
+export const chipProps = {
+  label: props.Text({ name: 'Label', group: 'Content', defaultValue: 'Chip' }),
+  count: props.Number({ name: 'Count', group: 'Content', min: 0, max: 999, decimals: 0 }),
+  color: props.Color({ name: 'Color', group: 'Style', defaultValue: '#e4572e' }),
+} satisfies PropsConfig<ChipProps>;
+
+// react/Chip.tinker.ts (same shape for solid, vue and vanilla)
+export default declareComponent(Chip, { name: 'Chip', props: chipProps });
+
+// anywhere, with any framework's definition
+const chip = definition.mount(element, clientValues);
+chip.update({ count: 5 });`;
+
+const payload = JSON.stringify(
+  { label: 'Hello', count: 99999, color: 'red', onClick: 'alert(1)', className: 'x' },
+  null,
+  2,
+);
+---
+
+<Layout title="Tinker – Spicy" description="Expose only chosen component props to clients.">
+  <h1>Tinker</h1>
+  <p>
+    Declare which props of a component clients may change. A <strong>definition</strong> carries
+    a JSON <strong>manifest</strong> (for building a panel) and a <strong>validator</strong> (for
+    untrusted input), and mounts the same way in React, Solid, Vue or plain JS.
+  </p>
+
+  <h2>Definition</h2>
+  <pre><code>{definitionCode}</code></pre>
+
+  <h2>Playground</h2>
+  <p>One generated panel drives the same chip in four frameworks.</p>
+  <div class="playground">
+    <div id="panel"></div>
+    <div class="stage">
+      <div class="row"><span class="fw">React</span><span id="mount-react"></span></div>
+      <div class="row"><span class="fw">Solid</span><span id="mount-solid"></span></div>
+      <div class="row"><span class="fw">Vue</span><span id="mount-vue"></span></div>
+      <div class="row"><span class="fw">Vanilla</span><span id="mount-vanilla"></span></div>
+    </div>
+  </div>
+
+  <h2>Validating client input</h2>
+  <p>
+    Whatever a client sends goes through <code>definition.resolve</code> or <code>mount</code>.
+    Only exposed props get through, and values are clamped or replaced.
+  </p>
+  <div class="payload">
+    <label>
+      Payload (JSON)
+      <textarea id="payload" rows="8" spellcheck="false">{payload}</textarea>
+    </label>
+    <div>
+      <p class="caption">Resolved (what the component receives)</p>
+      <pre id="resolved"></pre>
+      <p class="caption">Dropped (not exposed)</p>
+      <pre id="dropped"></pre>
+    </div>
+  </div>
+
+  <h2>Manifest</h2>
+  <p>JSON-safe. Store it, send it to a dashboard, validate with it. No component code needed.</p>
+  <pre id="manifest"></pre>
+</Layout>
+
+<script>
+  import '../lib/tinker/panel.css';
+  import { createPanel } from '@spicy/tinker/panel';
+  import { resolveValues } from '@spicy/tinker';
+  import react from '../components/chip/react/Chip.tinker';
+  import solid from '../components/chip/solid/Chip.tinker';
+  import vue from '../components/chip/vue/Chip.tinker';
+  import vanilla from '../components/chip/vanilla/Chip.tinker';
+
+  const byId = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+  const json = (value: unknown) => JSON.stringify(value, null, 2);
+
+  // All four share one schema, so any definition's manifest describes them all.
+  const manifest = react.manifest;
+  byId('manifest').textContent = json(manifest);
+
+  // Raw values as typed into the panel. Each mount validates them itself.
+  const values: Record<string, unknown> = Object.fromEntries(manifest.props.map((p) => [p.key, p.defaultValue]));
+
+  const mounted = [
+    react.mount(byId('mount-react'), values),
+    solid.mount(byId('mount-solid'), values),
+    vue.mount(byId('mount-vue'), values),
+    vanilla.mount(byId('mount-vanilla'), values),
+  ];
+
+  const panel = createPanel(manifest, {
+    values,
+    onChange(key, value) {
+      values[key] = value;
+      mounted.forEach((m) => m.update({ [key]: value }));
+    },
+  });
+  byId('panel').append(panel.element);
+
+  const payload = byId<HTMLTextAreaElement>('payload');
+  const showPayload = () => {
+    try {
+      const input = JSON.parse(payload.value);
+      byId('resolved').textContent = json(resolveValues(manifest.props, input));
+      byId('dropped').textContent = json(Object.keys(input).filter((k) => !manifest.props.some((p) => p.key === k)));
+    } catch {
+      byId('resolved').textContent = 'Not valid JSON';
+      byId('dropped').textContent = '';
+    }
+  };
+  payload.addEventListener('input', showPayload);
+  showPayload();
+</script>
+
+<style>
+  pre {
+    overflow-x: auto;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    background: color-mix(in srgb, currentColor 8%, transparent);
+    font-size: 0.8rem;
+  }
+  .playground,
+  .payload {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1.5rem;
+    align-items: start;
+  }
+  .stage {
+    display: grid;
+    gap: 0.75rem;
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .fw {
+    width: 4.5rem;
+    font-size: 0.8rem;
+    opacity: 0.7;
+  }
+  textarea {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 0.25rem;
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-size: 0.8rem;
+  }
+  .caption {
+    margin: 0 0 0.25rem;
+    font-size: 0.8rem;
+    opacity: 0.7;
+  }
+</style>

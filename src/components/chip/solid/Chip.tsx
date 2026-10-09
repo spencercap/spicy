@@ -1,15 +1,9 @@
 /** @jsxImportSource solid-js */
 import { createSignal } from 'solid-js';
 import '../chip.css';
+import type { ChipProps } from '../chip.props';
 
-export interface ChipProps {
-  /** Text shown in the chip. */
-  label?: string;
-  /** Number shown in the badge. */
-  count?: number;
-  /** Any CSS color: name, hex, rgb(), hsl(). */
-  color?: string;
-}
+export type { ChipProps };
 
 // Props are read through `props.*` (not destructured) so Solid keeps them reactive.
 export function Chip(props: ChipProps) {

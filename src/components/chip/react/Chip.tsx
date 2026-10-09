@@ -1,14 +1,8 @@
 import { useState } from 'react';
 import '../chip.css';
+import type { ChipProps } from '../chip.props';
 
-export interface ChipProps {
-  /** Text shown in the chip. */
-  label?: string;
-  /** Number shown in the badge. */
-  count?: number;
-  /** Any CSS color: name, hex, rgb(), hsl(). */
-  color?: string;
-}
+export type { ChipProps };
 
 export function Chip({ label = 'Chip', count = 0, color = '#e4572e' }: ChipProps) {
   return (
