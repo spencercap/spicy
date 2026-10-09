@@ -1,0 +1,35 @@
+/*
+ * Reads --gradient-start, --gradient-middle and --gradient-end.
+ *
+ * Blending in OKLCH keeps colors vivid. The default sRGB blend averages channels, so two
+ * colors far apart on the wheel (blue and yellow) meet in a dull grey. OKLCH blends lightness,
+ * chroma and hue instead, so the middle stays colorful.
+ *
+ * Caveat: two very saturated colors can blend through a color a screen can't show (blue to
+ * yellow passes through an extra-vivid green). The browser clips it, which can leave a faint band.
+ */
+.gradient {
+  --gradient-angle: 135deg;
+  width: 100%;
+  min-height: 8rem;
+  border-radius: 1rem;
+  background: linear-gradient(
+    var(--gradient-angle),
+    var(--gradient-start),
+    var(--gradient-middle),
+    var(--gradient-end)
+  );
+}
+
+/* Browsers without OKLCH gradients keep the sRGB blend above. This has to be an @supports
+   check: a declaration using var() always parses, so a plain fallback line would never apply. */
+@supports (background: linear-gradient(in oklch, red, blue)) {
+  .gradient {
+    background: linear-gradient(
+      var(--gradient-angle) in oklch,
+      var(--gradient-start),
+      var(--gradient-middle),
+      var(--gradient-end)
+    );
+  }
+}

@@ -1,0 +1,10 @@
+---
+import './gradient.css';
+import { gradientStyle, type GradientProps } from './gradient.props';
+
+type Props = GradientProps;
+
+const style = gradientStyle(Astro.props);
+---
+
+<div class="gradient" aria-hidden="true" style={style}></div>
