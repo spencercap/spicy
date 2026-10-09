@@ -1,0 +1,23 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const modules = import.meta.glob('./**/*.astro');
+
+const pages = Object.keys(modules)
+  .map((file) => file.replace(/^\.\//, '').replace(/\.astro$/, '').replace(/index$/, ''))
+  .map((slug) => ({
+    href: `/${slug}`.replace(/\/$/, '') || '/',
+    label: slug === '' ? 'Home' : slug.replace(/\/$/, '').split('/').pop()!.replace(/^./, (c) => c.toUpperCase()),
+  }))
+  .concat({ href: '/sitemap', label: 'Sitemap' }) // import.meta.glob omits this file itself
+  .sort((a, b) => a.href.localeCompare(b.href));
+---
+
+<Layout title="Sitemap – Spicy" description="All pages on this site.">
+  <h1>Sitemap</h1>
+  <ul>
+    {pages.map((page) => (
+      <li><a href={page.href}>{page.label}</a> <small>{page.href}</small></li>
+    ))}
+  </ul>
+</Layout>
