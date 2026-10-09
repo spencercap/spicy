@@ -1,0 +1,138 @@
+---
+// Add new top-level pages here.
+const links = [
+  { href: '/', label: 'Home' },
+  { href: '/about', label: 'About' },
+  { href: '/components', label: 'Components' },
+  { href: '/sitemap', label: 'Sitemap' },
+];
+
+const current = Astro.url.pathname.replace(/\/$/, '') || '/';
+---
+
+<nav aria-label="Main" data-nav>
+  <button type="button" class="toggle" aria-expanded="false" aria-controls="nav-links">
+    <span class="sr-only">Menu</span>
+    <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+      <path class="bars" d="M3 6h18M3 12h18M3 18h18" />
+      <path class="cross" d="M5 5l14 14M19 5L5 19" />
+    </svg>
+  </button>
+  <ul id="nav-links">
+    {links.map((link) => (
+      <li>
+        <a href={link.href} aria-current={link.href === current ? 'page' : undefined}>
+          {link.label}
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<noscript>
+  <!-- Without JS the toggle can't work, so keep the links visible. -->
+  <style>
+    @media (max-width: 36rem) {
+      [data-nav] .toggle { display: none; }
+      [data-nav] ul { display: flex; flex-wrap: wrap; position: static; border: 0; padding: 0; }
+    }
+  </style>
+</noscript>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-nav]').forEach((nav) => {
+    const toggle = nav.querySelector<HTMLButtonElement>('.toggle')!;
+
+    const setOpen = (open: boolean) => toggle.setAttribute('aria-expanded', String(open));
+    const isOpen = () => toggle.getAttribute('aria-expanded') === 'true';
+
+    toggle.addEventListener('click', () => setOpen(!isOpen()));
+    nav.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('a')) setOpen(false);
+    });
+    document.addEventListener('click', (e) => {
+      if (!nav.contains(e.target as Node)) setOpen(false);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isOpen()) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+  });
+</script>
+
+<style>
+  nav {
+    position: relative;
+  }
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  a[aria-current='page'] {
+    font-weight: 700;
+  }
+  .toggle {
+    display: none;
+    padding: 0.25rem;
+    border: 0;
+    background: none;
+    color: var(--accent);
+    cursor: pointer;
+  }
+  .toggle svg {
+    display: block;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+  .cross,
+  .toggle[aria-expanded='true'] .bars {
+    display: none;
+  }
+  .toggle[aria-expanded='true'] .cross {
+    display: inline;
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 36rem) {
+    .toggle {
+      display: block;
+    }
+    ul {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      z-index: 10;
+      flex-direction: column;
+      min-width: 12rem;
+      padding: 0.5rem;
+      border: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+      border-radius: 8px;
+      background: Canvas;
+      color: CanvasText;
+      box-shadow: 0 8px 24px rgb(0 0 0 / 0.15);
+    }
+    .toggle[aria-expanded='true'] + ul {
+      display: flex;
+    }
+    li a {
+      display: block;
+      padding: 0.5rem 0.75rem;
+    }
+  }
+</style>
