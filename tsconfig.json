@@ -4,6 +4,14 @@
   "exclude": ["dist"],
   "compilerOptions": {
     "jsx": "react-jsx",
-    "jsxImportSource": "react"
+    "jsxImportSource": "react",
+    "paths": {
+      "@spicy/tinker": ["./src/lib/tinker/index.ts"],
+      "@spicy/tinker/panel": ["./src/lib/tinker/panel.ts"],
+      "@spicy/tinker/react": ["./src/lib/tinker/adapters/react.ts"],
+      "@spicy/tinker/solid": ["./src/lib/tinker/adapters/solid.ts"],
+      "@spicy/tinker/vue": ["./src/lib/tinker/adapters/vue.ts"],
+      "@spicy/tinker/vanilla": ["./src/lib/tinker/adapters/vanilla.ts"]
+    }
   }
 }
