@@ -16,6 +16,15 @@ React, Solid, Vue and plain JavaScript, and one properties panel on the right ed
 
 ## demo
 
+production: 
+[https://spicy-space.pages.dev/](https://spicy-space.pages.dev/)
+
+staging: 
+[https://staging.spicy-space.pages.dev/](https://staging.spicy-space.pages.dev/)
+
+(+ previews are deployed per PR)
+
+tinker w props example:
 [https://spicy-space.pages.dev/tinker/](https://spicy-space.pages.dev/tinker/)
 
 <img width="1200" height="599" alt="Screenshot 1768" src="https://github.com/user-attachments/assets/aacb1b73-6aea-4130-8738-d182e2efbc71" />
