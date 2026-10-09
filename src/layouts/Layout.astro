@@ -1,4 +1,6 @@
 ---
+import Nav from '../components/ui/Nav.astro';
+
 interface Props {
   title: string;
   description?: string;
@@ -19,11 +21,7 @@ const { title, description = 'A simple Astro site.' } = Astro.props;
   <body>
     <header>
       <a href="/" class="brand">Spicy</a>
-      <nav>
-        <a href="/">Home</a>
-        <a href="/about">About</a>
-        <a href="/sitemap">Sitemap</a>
-      </nav>
+      <Nav />
     </header>
     <main>
       <slot />
@@ -45,14 +43,11 @@ const { title, description = 'A simple Astro site.' } = Astro.props;
     padding: 0 1rem;
   }
   header {
+    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1.5rem 0;
-  }
-  header nav {
-    display: flex;
-    gap: 1rem;
   }
   a {
     color: var(--accent);
