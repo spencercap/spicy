@@ -1,4 +1,4 @@
-# Spicy
+# Spicy Astro Playground
 
 A simple [Astro](https://astro.build) site for experimenting with components.
 
