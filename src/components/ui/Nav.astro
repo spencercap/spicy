@@ -33,7 +33,7 @@ const current = Astro.url.pathname.replace(/\/$/, '') || '/';
 <noscript>
   <!-- Without JS the toggle can't work, so keep the links visible. -->
   <style>
-    @media (max-width: 36rem) {
+    @media (max-width: 44rem) {
       [data-nav] .toggle { display: none; }
       [data-nav] ul { display: flex; flex-wrap: wrap; position: static; border: 0; padding: 0; }
     }
@@ -109,7 +109,7 @@ const current = Astro.url.pathname.replace(/\/$/, '') || '/';
     white-space: nowrap;
   }
 
-  @media (max-width: 36rem) {
+  @media (max-width: 44rem) {
     .toggle {
       display: block;
     }
