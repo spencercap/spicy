@@ -1,0 +1,57 @@
+---
+interface Props {
+  /** Text shown in the header. */
+  title: string;
+  /** Start expanded. Collapsed by default. */
+  open?: boolean;
+}
+
+const { title, open = false } = Astro.props;
+---
+
+<details class="accordion" open={open}>
+  <summary>
+    <span>{title}</span>
+    <span class="chevron" aria-hidden="true">›</span>
+  </summary>
+  <div class="panel">
+    <slot />
+  </div>
+</details>
+
+<style>
+  .accordion {
+    border: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+  }
+  summary {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    cursor: pointer;
+    list-style: none;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  .chevron {
+    display: inline-block;
+    transition: transform 0.15s;
+  }
+  .accordion[open] .chevron {
+    transform: rotate(90deg);
+  }
+  .panel {
+    padding: 0 1rem 1rem;
+    border-top: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .chevron {
+      transition: none;
+    }
+  }
+</style>

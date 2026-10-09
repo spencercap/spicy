@@ -3,21 +3,124 @@ import Layout from '../layouts/Layout.astro';
 
 const modules = import.meta.glob('./**/*.astro');
 
-const pages = Object.keys(modules)
-  .map((file) => file.replace(/^\.\//, '').replace(/\.astro$/, '').replace(/index$/, ''))
-  .map((slug) => ({
-    href: `/${slug}`.replace(/\/$/, '') || '/',
-    label: slug === '' ? 'Home' : slug.replace(/\/$/, '').split('/').pop()!.replace(/^./, (c) => c.toUpperCase()),
-  }))
-  .concat({ href: '/sitemap', label: 'Sitemap' }) // import.meta.glob omits this file itself
-  .sort((a, b) => a.href.localeCompare(b.href));
+// import.meta.glob omits this file itself, so add it by hand.
+const files = [...Object.keys(modules), './sitemap.astro']
+  .map((file) => file.replace(/^\.\//, ''))
+  .sort();
+
+const routes = files.map((file) => {
+  const route = '/' + file.replace(/\.astro$/, '').replace(/index$/, '');
+  return {
+    file: `src/pages/${file}`,
+    href: route.length > 1 ? route.replace(/\/$/, '') : route,
+  };
+});
+
+routes.sort((a, b) => a.href.localeCompare(b.href));
+
+const width = Math.max(...routes.map((r) => r.href.length));
 ---
 
 <Layout title="Sitemap – Spicy" description="All pages on this site.">
-  <h1>Sitemap</h1>
-  <ul>
-    {pages.map((page) => (
-      <li><a href={page.href}>{page.label}</a> <small>{page.href}</small></li>
-    ))}
-  </ul>
+  <div class="term">
+    <div class="bar">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+      <span class="title">spicy — sitemap</span>
+    </div>
+    <div class="body">
+      <p class="cmd"><span class="prompt">$</span> tree src/pages --routes</p>
+      <p class="dim">src/pages</p>
+      <ul>
+        {routes.map((route, i) => (
+          <li>
+            <span class="dim">{i === routes.length - 1 ? '└──' : '├──'}</span>{' '}
+            <a href={route.href}>{route.href.padEnd(width)}</a>
+            <span class="dim">  {route.file}</span>
+          </li>
+        ))}
+      </ul>
+      <p class="dim">{routes.length} routes</p>
+      <p class="cmd"><span class="prompt">$</span> <span class="cursor"></span></p>
+    </div>
+  </div>
 </Layout>
+
+<style>
+  .term {
+    --bg: #0d1117;
+    --fg: #c9d1d9;
+    --dim: #6e7681;
+    --green: #3fb950;
+    --cyan: #56d4dd;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+    font-size: 0.875rem;
+    overflow: hidden;
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid #30363d;
+    background: #161b22;
+  }
+  .dot {
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+  }
+  .r { background: #ff5f56; }
+  .y { background: #ffbd2e; }
+  .g { background: #27c93f; }
+  .title {
+    margin-left: 0.5rem;
+    color: var(--dim);
+    font-size: 0.75rem;
+  }
+  .body {
+    padding: 1rem;
+    overflow-x: auto;
+  }
+  p {
+    margin: 0.25rem 0;
+  }
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  li {
+    white-space: pre;
+  }
+  .prompt {
+    color: var(--green);
+  }
+  .dim {
+    color: var(--dim);
+  }
+  a {
+    color: var(--cyan);
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+  .cursor {
+    display: inline-block;
+    width: 0.55rem;
+    height: 1rem;
+    vertical-align: text-bottom;
+    background: var(--fg);
+    animation: blink 1s steps(1) infinite;
+  }
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cursor { animation: none; }
+  }
+</style>

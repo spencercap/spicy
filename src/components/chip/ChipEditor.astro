@@ -1,0 +1,36 @@
+---
+import Chip from './Chip.astro';
+---
+
+<div class="editor" data-chip-editor>
+  <Chip label="Messages" count={3} color="#663399" />
+  <div class="controls">
+    <label>label <input type="text" data-prop="label" value="Messages" /></label>
+    <label>count <input type="number" data-prop="count" value="3" /></label>
+    <label>color <input type="color" data-prop="color" value="#663399" /></label>
+  </div>
+</div>
+
+<script>
+  // Vanilla version: each input updates the chip in the same editor as you type.
+  document.querySelectorAll<HTMLElement>('[data-chip-editor]').forEach((editor) => {
+    const chip = editor.querySelector<HTMLElement>('[data-chip]')!;
+    const label = chip.querySelector<HTMLElement>('.label')!;
+    const count = chip.querySelector<HTMLElement>('.count')!;
+
+    editor.addEventListener('input', (event) => {
+      const input = event.target as HTMLInputElement;
+      switch (input.dataset.prop) {
+        case 'label':
+          label.textContent = input.value;
+          break;
+        case 'count':
+          count.textContent = String(Number(input.value) || 0);
+          break;
+        case 'color':
+          chip.style.setProperty('--chip-color', input.value);
+          break;
+      }
+    });
+  });
+</script>
