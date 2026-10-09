@@ -1,0 +1,39 @@
+---
+interface Props {
+  /** Text shown in the chip. */
+  label?: string;
+  /** Number shown in the badge. */
+  count?: number;
+  /** Any CSS color: name, hex, rgb(), hsl(). */
+  color?: string;
+}
+
+const { label = 'Chip', count = 0, color = '#e4572e' } = Astro.props;
+---
+
+<span class="chip" style={`--chip-color: ${color}`}>
+  <span class="label">{label}</span>
+  <span class="count">{count}</span>
+</span>
+
+<style>
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.5rem 0.25rem 0.75rem;
+    border: 1px solid var(--chip-color);
+    border-radius: 999px;
+    color: var(--chip-color);
+    font-weight: 600;
+  }
+  .count {
+    min-width: 1.5rem;
+    padding: 0 0.4rem;
+    border-radius: 999px;
+    background: var(--chip-color);
+    color: #fff;
+    font-size: 0.8rem;
+    text-align: center;
+  }
+</style>

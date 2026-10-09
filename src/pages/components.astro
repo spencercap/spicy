@@ -1,0 +1,63 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Chip from '../components/Chip.astro';
+
+const examples = [
+  { label: 'Default' },
+  { label: 'Messages', count: 3, color: 'rebeccapurple' },
+  { label: 'Errors', count: 12, color: '#d00000' },
+  { label: 'Done', count: 100, color: 'hsl(140 60% 35%)' },
+];
+---
+
+<Layout title="Components – Spicy" description="Component examples and their props.">
+  <h1>Components</h1>
+
+  <h2>Chip</h2>
+  <p>
+    A small badge. Each prop is set by whoever uses the component, so every instance can look
+    different.
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>Prop</th><th>Type</th><th>Default</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>label</code></td><td>string</td><td><code>'Chip'</code></td></tr>
+      <tr><td><code>count</code></td><td>number</td><td><code>0</code></td></tr>
+      <tr><td><code>color</code></td><td>CSS color</td><td><code>'#e4572e'</code></td></tr>
+    </tbody>
+  </table>
+
+  <h3>Instances</h3>
+  <div class="row">
+    {examples.map((props) => <Chip {...props} />)}
+  </div>
+
+  <h3>Usage</h3>
+  <pre><code>{`<Chip label="Messages" count={3} color="rebeccapurple" />`}</code></pre>
+</Layout>
+
+<style>
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  table {
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+  }
+  th,
+  td {
+    padding: 0.25rem 1rem 0.25rem 0;
+    text-align: left;
+  }
+  pre {
+    overflow-x: auto;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    background: color-mix(in srgb, currentColor 8%, transparent);
+  }
+</style>
