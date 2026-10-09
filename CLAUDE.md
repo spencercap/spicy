@@ -4,6 +4,12 @@
 - Stack: Astro (static site) with React, Solid and Vue integrations.
 - Checks: `pnpm test` (vitest), `pnpm check` (astro check, also type-checks .ts/.vue), `pnpm build`. Run all three before pushing: the build alone does not type-check.
 
+## Branches
+
+- `production` is the production branch and the repo's default. Don't push to it or open feature PRs against it unless asked.
+- `staging` is where work lands (it replaced `main`; there is no `main` branch). Branch off `staging` and open PRs into `staging`.
+- Work from a new `claude/<topic>` branch and open a PR for each change; don't push straight to `staging`. A merged PR is finished, so start follow-ups on a fresh branch off the latest `staging`.
+
 ## Structure
 
 ```
