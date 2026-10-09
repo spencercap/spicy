@@ -41,7 +41,7 @@ definition.resolve(untrustedInput);                      // validate without ren
 | Import                  | What                                                         | Needs |
 | :---------------------- | :----------------------------------------------------------- | :---- |
 | `@spicy/tinker`         | `props`, `describe`, `resolveValues`, `defineComponent`, types | nothing |
-| `@spicy/tinker/panel`   | `createPanel(manifest, { onChange })`: DOM controls from a manifest | a DOM |
+| `@spicy/tinker/panel`   | `createPanel(manifest, { onChange })`: an inspector-style properties panel from a manifest (import `panel.css` too) | a DOM |
 | `@spicy/tinker/react`   | `declareComponent` for React components                      | `react`, `react-dom` |
 | `@spicy/tinker/solid`   | `declareComponent` for Solid components                      | `solid-js` |
 | `@spicy/tinker/vue`     | `declareComponent` for Vue components                        | `vue` |
@@ -64,6 +64,18 @@ Every builder also takes `name` (panel label), `group`, `tooltip` and `defaultVa
 The config is checked against the component's own props: a `number` prop can only be given
 `Number`, a `string` prop can be `Text`, `Variant` or `Color`, and a key that isn't a prop of the
 component is an error.
+
+## The panel
+
+`createPanel(manifest, { values, onChange })` returns `{ element, setValues, destroy }`. It is pure DOM, so it
+sits next to a React, Solid, Vue or plain-JS preview alike.
+
+- collapsible sections by `group` (props without one sit above, unsectioned), a label and a control per prop
+- a blue dot beside any prop that differs from its default; click it to reset
+- controls per kind: text and number inputs (number gets `min`/`max`/`step`), a select, a color swatch with its hex, a switch with `trueLabel`/`falseLabel`
+- dark by default; theme it by overriding the `--tinker-*` custom properties in `panel.css`
+
+`onChange` receives the raw edited value. Pass it to `mount(...).update(...)`, which validates.
 
 ## Validation (`resolveValues`)
 

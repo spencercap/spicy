@@ -34,15 +34,21 @@ const payload = JSON.stringify(
   <pre><code>{definitionCode}</code></pre>
 
   <h2>Playground</h2>
-  <p>One generated panel drives the same chip in four frameworks.</p>
-  <div class="playground">
-    <div id="panel"></div>
-    <div class="stage">
-      <div class="row"><span class="fw">React</span><span id="mount-react"></span></div>
-      <div class="row"><span class="fw">Solid</span><span id="mount-solid"></span></div>
-      <div class="row"><span class="fw">Vue</span><span id="mount-vue"></span></div>
-      <div class="row"><span class="fw">Vanilla</span><span id="mount-vanilla"></span></div>
+  <p>One generated inspector drives the same chip in four frameworks.</p>
+  <div class="shell">
+    <div class="canvas" aria-label="Preview">
+      <figure class="frame"><figcaption>React</figcaption><span id="mount-react"></span></figure>
+      <figure class="frame"><figcaption>Solid</figcaption><span id="mount-solid"></span></figure>
+      <figure class="frame"><figcaption>Vue</figcaption><span id="mount-vue"></span></figure>
+      <figure class="frame"><figcaption>Vanilla</figcaption><span id="mount-vanilla"></span></figure>
     </div>
+    <aside class="inspector" aria-label="Properties">
+      <header>
+        <span id="inspector-name" class="name"></span>
+        <span class="kind">Properties</span>
+      </header>
+      <div id="panel"></div>
+    </aside>
   </div>
 
   <h2>Validating client input</h2>
@@ -83,6 +89,7 @@ const payload = JSON.stringify(
   // All four share one schema, so any definition's manifest describes them all.
   const manifest = react.manifest;
   byId('manifest').textContent = json(manifest);
+  byId('inspector-name').textContent = manifest.name;
 
   // Raw values as typed into the panel. Each mount validates them itself.
   const values: Record<string, unknown> = Object.fromEntries(manifest.props.map((p) => [p.key, p.defaultValue]));
@@ -126,27 +133,97 @@ const payload = JSON.stringify(
     background: color-mix(in srgb, currentColor 8%, transparent);
     font-size: 0.8rem;
   }
-  .playground,
   .payload {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
     gap: 1.5rem;
     align-items: start;
   }
-  .stage {
+
+  /* An editor shell: canvas on the left, inspector on the right. Wider than the text column. */
+  .shell {
+    --inspector: 17.5rem;
     display: grid;
-    gap: 0.75rem;
+    grid-template-columns: 1fr var(--inspector);
+    width: min(56rem, calc(100vw - 2rem));
+    margin-left: 50%;
+    transform: translateX(-50%);
+    border: 1px solid #3d3d3d;
+    border-radius: 8px;
+    overflow: hidden;
   }
-  .row {
-    display: flex;
-    align-items: center;
+  .canvas {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-content: center;
     gap: 1rem;
+    min-height: 18rem;
+    padding: 1.5rem;
+    background-color: #ececee;
+    background-image: radial-gradient(#c3c3c8 1px, transparent 1px);
+    background-size: 16px 16px;
+    color: #222;
   }
-  .fw {
-    width: 4.5rem;
-    font-size: 0.8rem;
-    opacity: 0.7;
+  .frame {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 6rem;
+    margin: 0;
+    padding: 1.25rem 0.75rem 1rem;
+    border: 1px dashed #a9a9b0;
+    border-radius: 6px;
+    background: #fff;
   }
+  .frame figcaption {
+    order: -1;
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #777;
+  }
+  .inspector {
+    border-left: 1px solid #3d3d3d;
+    background: #2b2b2b;
+    color: #d9d9d9;
+    font: 12px/1.4 system-ui, -apple-system, 'Segoe UI', sans-serif;
+  }
+  .inspector header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 0.75rem;
+    border-bottom: 1px solid #3d3d3d;
+  }
+  .inspector .name {
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  .inspector .kind {
+    color: #8f8f8f;
+  }
+  @media (max-width: 40rem) {
+    .shell {
+      grid-template-columns: 1fr;
+    }
+    .canvas {
+      min-height: 0;
+      padding: 1rem;
+      gap: 0.75rem;
+    }
+    .frame {
+      min-height: 0;
+      padding: 0.75rem 0.5rem;
+      gap: 0.5rem;
+    }
+    .inspector {
+      border-top: 1px solid #3d3d3d;
+      border-left: 0;
+    }
+  }
+
   textarea {
     display: block;
     width: 100%;
