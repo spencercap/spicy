@@ -1,0 +1,69 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'A simple Astro site.' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <header>
+      <a href="/" class="brand">Spicy</a>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+      </nav>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer>© {new Date().getFullYear()} Spicy</footer>
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    color-scheme: light dark;
+    --accent: #e4572e;
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    line-height: 1.6;
+  }
+  body {
+    margin: 0 auto;
+    max-width: 42rem;
+    padding: 0 1rem;
+  }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 0;
+  }
+  header nav {
+    display: flex;
+    gap: 1rem;
+  }
+  a {
+    color: var(--accent);
+  }
+  .brand {
+    font-weight: 700;
+    font-size: 1.25rem;
+    text-decoration: none;
+  }
+  footer {
+    padding: 2rem 0;
+    opacity: 0.6;
+    font-size: 0.875rem;
+  }
+</style>
